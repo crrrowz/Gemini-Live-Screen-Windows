@@ -1,2 +1,0 @@
-docker openclaw nodes approve d8206298-2441-408b-b877-beea81a1f626
-npm start
