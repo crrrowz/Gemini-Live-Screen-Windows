@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#18181b"/>
+      <stop offset="100%" stop-color="#09090b"/>
+    </linearGradient>
+    <linearGradient id="screenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="50%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer background circle/squircle -->
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="url(#bg)" stroke="#27272a" stroke-width="3"/>
+
+  <!-- Monitor Frame -->
+  <rect x="18" y="22" width="92" height="64" rx="8" fill="#18181b" stroke="#3f3f46" stroke-width="3"/>
+
+  <!-- Screen Glass Area -->
+  <rect x="23" y="27" width="82" height="54" rx="5" fill="#09090b"/>
+
+  <!-- Windows Screen Grid/Panels (representing Desktop) -->
+  <rect x="27" y="31" width="36" height="22" rx="3" fill="url(#screenGrad)" opacity="0.95"/>
+  <rect x="67" y="31" width="34" height="22" rx="3" fill="url(#screenGrad)" opacity="0.75"/>
+  <rect x="27" y="57" width="36" height="20" rx="3" fill="url(#screenGrad)" opacity="0.65"/>
+  <rect x="67" y="57" width="34" height="20" rx="3" fill="url(#screenGrad)" opacity="0.85"/>
+
+  <!-- Center Live Broadcast Signal Dot -->
+  <circle cx="64" cy="98" r="3" fill="#38bdf8"/>
+
+  <!-- Monitor Stand -->
+  <path d="M54 86 L50 102 L78 102 L74 86 Z" fill="#27272a" stroke="#3f3f46" stroke-width="2"/>
+  <rect x="42" y="102" width="44" height="6" rx="3" fill="#3f3f46"/>
+</svg>

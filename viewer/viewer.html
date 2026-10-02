@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gemini Live Screen for Windows</title>
+  <link rel="icon" type="image/png" href="../assets/icons/icon32.png">
+  <link rel="stylesheet" href="viewer.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+</head>
+<body class="state-idle">
+  <!-- Main Screen Viewer Container -->
+  <main id="viewerContainer" class="viewer-container" role="main">
+
+    <!-- Video Stage for live screen rendering -->
+    <div id="videoStage" class="video-stage" aria-label="Windows Live Screen Display">
+      <video
+        id="screenVideo"
+        class="screen-video"
+        autoplay
+        playsinline
+        muted
+        aria-hidden="true"
+      ></video>
+    </div>
+
+    <!-- Hero / Start Screen Bento Layout -->
+    <section id="heroCard" class="bento-hero" aria-labelledby="appTitle">
+      <!-- Top Brand Bar -->
+      <header class="bento-header">
+        <div class="brand-badge">
+          <div class="brand-icon-glow">
+            <svg class="brand-svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="3" />
+              <path d="M8 21h8" stroke-linecap="round"/>
+              <path d="M12 17v4" stroke-linecap="round"/>
+              <circle cx="12" cy="10" r="2" fill="currentColor"/>
+            </svg>
+          </div>
+          <span class="brand-tag">Windows Companion</span>
+        </div>
+        <div class="status-indicator">
+          <span class="status-dot"></span>
+          <span class="status-label">Ready</span>
+        </div>
+      </header>
+
+      <!-- Main Title & Intro -->
+      <div class="bento-title-section">
+        <h1 id="appTitle" class="hero-heading">
+          Gemini Live Screen <span class="gradient-text">for Windows</span>
+        </h1>
+        <p class="hero-desc">
+          Direct, hardware-accelerated Windows desktop display built for Chrome & Gemini Live.
+        </p>
+      </div>
+
+      <!-- Primary Action CTA -->
+      <div class="bento-cta-wrapper">
+        <button id="btnShareScreen" class="cta-button" type="button" autofocus>
+          <div class="cta-shine" aria-hidden="true"></div>
+          <svg class="cta-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="4" />
+            <path d="M9 3v18" stroke-dasharray="2 2" />
+            <path d="M15 9l3 3-3 3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="cta-text">Share Windows Screen</span>
+        </button>
+      </div>
+
+      <!-- Gemini Live Direct Integration Banner -->
+      <div class="gemini-card">
+        <div class="gemini-card-header">
+          <div class="gemini-icon-wrapper">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#38bdf8" stroke-width="2">
+              <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07L19.07 4.93"/>
+            </svg>
+          </div>
+          <div class="gemini-info">
+            <span class="gemini-title">Gemini Live Compatibility</span>
+            <span class="gemini-sub">Local HTTP Tab Sharing Endpoint</span>
+          </div>
+        </div>
+        <div class="gemini-url-box">
+          <code id="localUrlDisplay" class="url-code">http://localhost:5173/viewer/viewer.html</code>
+        </div>
+      </div>
+
+      <!-- Bento Features Matrix -->
+      <div class="bento-grid">
+        <div class="bento-card">
+          <div class="bento-card-icon">⚡</div>
+          <div class="bento-card-content">
+            <h3 class="bento-card-title">60 FPS Zero-Lag</h3>
+            <p class="bento-card-desc">Direct GPU composition passthrough without transcoding delay.</p>
+          </div>
+        </div>
+
+        <div class="bento-card">
+          <div class="bento-card-icon">🔒</div>
+          <div class="bento-card-content">
+            <h3 class="bento-card-title">100% Local</h3>
+            <p class="bento-card-desc">Zero recording, zero microphone, no cloud telemetry or storage.</p>
+          </div>
+        </div>
+
+        <div class="bento-card bento-card-wide">
+          <div class="bento-card-icon">🖥️</div>
+          <div class="bento-card-content">
+            <h3 class="bento-card-title">Aspect-Ratio Engine</h3>
+            <p class="bento-card-desc">Letterboxing preserve for 16:9, 16:10, 4:3, and Ultrawide monitors.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="picker-hint">
+        <span class="hint-key">PRO TIP</span>
+        <span class="hint-text">Select <strong>Entire Screen</strong> in the native Chrome dialog for full Windows desktop capture.</span>
+      </div>
+    </section>
+
+    <!-- Error / Cancelled State Card -->
+    <section id="errorCard" class="error-card hidden" aria-live="assertive" role="alert">
+      <div class="error-icon-wrapper">
+        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+      </div>
+      <h2 id="errorTitle" class="error-title">Screen Sharing Cancelled</h2>
+      <p id="errorMessage" class="error-message">The screen picker was dismissed or permission was not granted.</p>
+      <div class="error-actions">
+        <button id="btnRetry" class="cta-button cta-button-secondary" type="button">
+          <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18" aria-hidden="true">
+            <path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.451a.75.75 0 000-1.5H4.5a.75.75 0 00-.75.75v3.75a.75.75 0 001.5 0v-2.193l.423.423a7 7 0 0011.758-3.178.75.75 0 00-1.119-.907zM4.688 8.576a5.5 5.5 0 019.201-2.466l.312.311H11.75a.75.75 0 000 1.5h3.75a.75.75 0 00.75-.75V3.421a.75.75 0 00-1.5 0v2.193l-.423-.423a7 7 0 00-11.758 3.178.75.75 0 001.119.907z" clip-rule="evenodd" />
+          </svg>
+          <span>Try Again</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Draggable Floating HUD Controls (Overlay in Viewing State) -->
+    <nav id="hudControls" class="hud-controls" aria-label="Screen Viewer Controls">
+      <!-- Drag Handle -->
+      <div id="hudDragHandle" class="hud-drag-handle" title="Drag to move bar" aria-label="Drag bar">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true">
+          <circle cx="9" cy="6" r="1.5"/>
+          <circle cx="15" cy="6" r="1.5"/>
+          <circle cx="9" cy="12" r="1.5"/>
+          <circle cx="15" cy="12" r="1.5"/>
+          <circle cx="9" cy="18" r="1.5"/>
+          <circle cx="15" cy="18" r="1.5"/>
+        </svg>
+      </div>
+
+      <!-- Live Status Badge -->
+      <div class="hud-item hud-badge" title="Live Screen Sharing Status">
+        <span class="live-dot" aria-hidden="true"></span>
+        <span id="hudStatusText" class="hud-status-text">LIVE</span>
+        <span id="hudResolutionText" class="hud-resolution-text">1080p</span>
+      </div>
+
+      <div class="hud-divider" aria-hidden="true"></div>
+
+      <!-- Eye Toggle Button (Hide / Show HUD) -->
+      <button
+        id="btnToggleEye"
+        class="hud-btn hud-btn-icon"
+        type="button"
+        title="Hide / Minimize Controls (Key: H)"
+        aria-label="Toggle Controls Visibility"
+      >
+        <svg id="iconEyeOpen" class="hud-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
+        <svg id="iconEyeClosed" class="hud-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+          <line x1="1" y1="1" x2="23" y2="23" />
+        </svg>
+      </button>
+
+      <!-- Toggle Fullscreen Button -->
+      <button
+        id="btnToggleFullscreen"
+        class="hud-btn hud-btn-icon"
+        type="button"
+        title="Toggle Fullscreen (Key: F)"
+        aria-label="Toggle Fullscreen"
+      >
+        <svg id="iconEnterFullscreen" class="hud-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+        </svg>
+        <svg id="iconExitFullscreen" class="hud-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/>
+        </svg>
+      </button>
+
+      <!-- Stop Sharing Button -->
+      <button
+        id="btnStopSharing"
+        class="hud-btn hud-btn-danger"
+        type="button"
+        title="Stop Screen Sharing (Key: Esc or S)"
+        aria-label="Stop Sharing Screen"
+      >
+        <svg class="hud-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/>
+        </svg>
+        <span class="hud-btn-text">Stop</span>
+      </button>
+    </nav>
+
+    <!-- Minimized Floating Eye Pill (When HUD is hidden) -->
+    <button
+      id="btnRevealEye"
+      class="hud-reveal-pill hidden"
+      type="button"
+      title="Show Screen Viewer Controls"
+      aria-label="Show Controls"
+    >
+      <svg class="hud-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+    </button>
+
+    <!-- Invisible ARIA live status announcer for screen readers -->
+    <div id="srAnnouncer" class="sr-only" aria-live="polite"></div>
+
+  </main>
+
+  <script type="module" src="viewer.js"></script>
+</body>
+</html>

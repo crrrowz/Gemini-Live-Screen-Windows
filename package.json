@@ -1,0 +1,20 @@
+{
+  "name": "gemini-live-screen-windows",
+  "version": "1.0.0",
+  "description": "Live Windows desktop display for Gemini Live and Chrome using Manifest V3",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test tests/*.test.js",
+    "lint": "node -e \"console.log('Validating manifest and JavaScript syntax...');\" && node --check background/service-worker.js && node --check viewer/viewer-controller.js && node --check viewer/viewer.js"
+  },
+  "keywords": [
+    "gemini-live",
+    "chrome-extension",
+    "manifest-v3",
+    "screen-viewer",
+    "windows-desktop"
+  ],
+  "author": "",
+  "license": "MIT"
+}
