@@ -11,6 +11,14 @@ It turns any Chrome browser tab into a live, low-latency, fullscreen display of 
 
 ---
 
+<div align="center">
+  <img src="imgs/gif.gif" alt="Gemini Live Screen for Windows Live Demo" width="850" style="max-width: 100%; border-radius: 18px; box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.75); margin-bottom: 20px;" />
+  <br />
+  <img src="imgs/image.png" alt="Gemini Live Screen for Windows Bento UI Preview" width="850" style="max-width: 100%; border-radius: 18px; box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.75);" />
+</div>
+
+---
+
 ## 📑 Quick Navigation
 
 - [💡 The "Why" & Value Proposition](#-the-why--value-proposition)

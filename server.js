@@ -1,9 +1,11 @@
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
+const __filename = fileURLToPath(import.meta.url);
+const ROOT_DIR = path.dirname(__filename);
 const PORT = process.env.PORT || 5173;
-const ROOT_DIR = path.resolve('.');
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -17,10 +19,10 @@ const MIME_TYPES = {
 };
 
 const server = http.createServer((req, res) => {
-  // Normalize request URL
-  let reqPath = req.url.split('?')[0];
-  if (reqPath === '/' || reqPath === '') {
-    reqPath = '/viewer/viewer.html';
+  // Normalize request URL and strip leading slashes for Windows safety
+  let reqPath = req.url.split('?')[0].replace(/^\/+/, '');
+  if (reqPath === '' || reqPath === 'viewer' || reqPath === 'viewer/') {
+    reqPath = 'viewer/viewer.html';
   }
 
   // Prevent path traversal
@@ -29,7 +31,7 @@ const server = http.createServer((req, res) => {
 
   fs.stat(filePath, (err, stats) => {
     if (err || !stats.isFile()) {
-      // If requested file doesn't exist, try resolving inside viewer/
+      // If requested file doesn't exist directly, try resolving inside viewer/
       const fallbackPath = path.join(ROOT_DIR, 'viewer', safePath);
       fs.stat(fallbackPath, (fallbackErr, fallbackStats) => {
         if (!fallbackErr && fallbackStats.isFile()) {
