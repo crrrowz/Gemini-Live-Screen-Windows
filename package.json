@@ -1,7 +1,7 @@
 {
   "name": "gemini-live-screen-windows",
   "version": "1.0.0",
-  "description": "Live Windows desktop display for Gemini Live and Chrome using Manifest V3",
+  "description": "A lightweight, zero-latency Chrome Extension & local viewer that streams your live Windows desktop into a dedicated browser tab for Gemini Live, AI agents, and real-time screen sharing. Features zero recording, hardware acceleration, background active keep-alive, and full keyboard shortcuts with a modern dark Bento UI.",
   "type": "module",
   "scripts": {
     "start": "node server.js",
@@ -12,8 +12,18 @@
     "gemini-live",
     "chrome-extension",
     "manifest-v3",
+    "screen-sharing",
+    "windows",
+    "webrtc",
+    "getdisplaymedia",
+    "desktop-capture",
     "screen-viewer",
-    "windows-desktop"
+    "multimodal-ai",
+    "ai-agent",
+    "zero-dependency",
+    "hardware-accelerated",
+    "bento-ui",
+    "javascript"
   ],
   "author": "",
   "license": "MIT"
