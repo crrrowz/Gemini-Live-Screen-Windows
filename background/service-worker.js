@@ -7,22 +7,51 @@
  * - Maintain zero persistent background overhead and zero extraneous permissions.
  */
 
+const VIEWER_PATH = 'viewer/viewer.html';
 const LOCAL_HTTP_URL = 'http://localhost:5173/viewer/viewer.html';
 
 /**
- * Handles extension icon click: opens http://localhost:5173/viewer/viewer.html for Gemini Live.
+ * Dynamically determines whether the local HTTP companion server is running.
+ * - If running (HTTP 200 on port 5173): returns http://localhost:5173 for Gemini Live.
+ * - If offline: gracefully falls back to the native extension page with zero errors!
+ */
+export async function getPreferredViewerUrl() {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 280);
+    const res = await fetch('http://127.0.0.1:5173/viewer/viewer.html', {
+      method: 'GET',
+      mode: 'no-cors',
+      cache: 'no-store',
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    return LOCAL_HTTP_URL;
+  } catch {
+    return chrome.runtime.getURL(VIEWER_PATH);
+  }
+}
+
+/**
+ * Handles extension icon click: opens the viewer tab with dynamic auto-detection.
  */
 export async function handleActionClick() {
-  const targetUrl = LOCAL_HTTP_URL;
+  const targetUrl = await getPreferredViewerUrl();
+  const extensionUrl = chrome.runtime.getURL(VIEWER_PATH);
 
   try {
-    // Check if local HTTP viewer tab is already open in any window
+    // Check if viewer tab (either HTTP or Extension) is already open in any window
     const tabs = await chrome.tabs.query({});
-    const existingTab = tabs ? tabs.find(t => t.url && t.url.startsWith('http://localhost:5173')) : null;
+    const existingTab = tabs ? tabs.find(t => t.url && (t.url.startsWith('http://localhost:5173') || t.url === extensionUrl)) : null;
 
     if (existingTab) {
       if (existingTab.id !== undefined) {
-        await chrome.tabs.update(existingTab.id, { active: true });
+        // Upgrade from extension to HTTP if server was started
+        if (existingTab.url === extensionUrl && targetUrl === LOCAL_HTTP_URL) {
+          await chrome.tabs.update(existingTab.id, { url: targetUrl, active: true });
+        } else {
+          await chrome.tabs.update(existingTab.id, { active: true });
+        }
       }
       if (existingTab.windowId !== undefined) {
         await chrome.windows.update(existingTab.windowId, { focused: true });
@@ -30,12 +59,12 @@ export async function handleActionClick() {
       return existingTab;
     }
 
-    // Open standard tab at http://localhost:5173
+    // Open as a standard tab
     const newTab = await chrome.tabs.create({ url: targetUrl });
     return newTab;
   } catch (err) {
     console.error('Error opening viewer tab:', err);
-    return await chrome.tabs.create({ url: targetUrl });
+    return await chrome.tabs.create({ url: extensionUrl });
   }
 }
 
