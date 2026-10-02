@@ -26,30 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const srAnnouncer = document.getElementById('srAnnouncer');
   const localUrlDisplay = document.getElementById('localUrlDisplay');
 
-  // Dynamic companion server detector & auto-upgrade
+  // Always redirect to http://localhost:5173 for Gemini Live compatibility
   if (window.location.protocol === 'chrome-extension:') {
-    const probeServer = () => {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 250);
-      fetch('http://127.0.0.1:5173/viewer/viewer.html', { method: 'GET', mode: 'no-cors', cache: 'no-store', signal: controller.signal })
-        .then(() => {
-          clearTimeout(timer);
-          window.location.replace('http://localhost:5173/viewer/viewer.html');
-        })
-        .catch(() => {
-          clearTimeout(timer);
-        });
-    };
-
-    // Probe immediately and then every 2 seconds while idle on extension page
-    probeServer();
-    const probeInterval = setInterval(() => {
-      if (document.body.classList.contains('state-idle')) {
-        probeServer();
-      }
-    }, 2000);
-
-    window.addEventListener('beforeunload', () => clearInterval(probeInterval));
+    window.location.replace('http://localhost:5173/viewer/viewer.html');
+    return;
   }
 
   // If served over HTTP or Extension, update the display URL
