@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release Tag Version (e.g. v1.0.1)'
+        required: true
+        default: 'v1.0.1'
 
 permissions:
   contents: write
@@ -28,10 +34,19 @@ jobs:
       - name: Run Automated Test Suite
         run: npm test
 
+      - name: Determine Release Tag
+        id: vars
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ github.event.inputs.tag_name }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          fi
+
       - name: Package Chrome Extension (.zip)
         run: |
           mkdir -p dist
-          zip -r dist/gemini-live-screen-windows-${{ github.ref_name }}.zip \
+          zip -r dist/gemini-live-screen-windows-${{ steps.vars.outputs.tag }}.zip \
             manifest.json \
             package.json \
             server.js \
@@ -45,12 +60,12 @@ jobs:
       - name: Create GitHub Release & Upload Assets
         uses: softprops/action-gh-release@v2
         with:
-          name: "${{ github.ref_name }} - Gemini Live Screen for Windows"
-          tag_name: ${{ github.ref_name }}
+          name: "${{ steps.vars.outputs.tag }} - Gemini Live Screen for Windows"
+          tag_name: ${{ steps.vars.outputs.tag }}
           draft: false
           prerelease: false
           body_path: RELEASE_NOTES.md
           files: |
-            dist/gemini-live-screen-windows-${{ github.ref_name }}.zip
+            dist/gemini-live-screen-windows-${{ steps.vars.outputs.tag }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
