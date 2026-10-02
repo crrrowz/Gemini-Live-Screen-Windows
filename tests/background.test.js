@@ -16,7 +16,12 @@ describe('Background Service Worker Tests', () => {
 
     globalThis.chrome = {
       runtime: {
-        getURL: (path) => `chrome-extension://mock-extension-id/${path}`
+        getURL: (path) => `chrome-extension://mock-extension-id/${path}`,
+        connectNative: () => ({
+          onMessage: { addListener: () => {} },
+          onDisconnect: { addListener: () => {} },
+          disconnect: () => {}
+        })
       },
       tabs: {
         query: async (queryInfo) => {

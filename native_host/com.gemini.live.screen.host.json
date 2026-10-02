@@ -1,0 +1,10 @@
+{
+  "name": "com.gemini.live.screen.host",
+  "description": "Native Messaging Companion Host for Gemini Live Screen",
+  "path": "D:\\files\\Contracted projects\\google extensions\\gemini-live-screen-windows\\native_host\\companion.bat",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://gcihkgbnghadbaabjkpelkpimiljkblo/",
+    "chrome-extension://bkabbbkokldlpnmjkoemaefadjikddni/"
+  ]
+}

@@ -135,61 +135,63 @@ openclaw/
 
 ## 🛠️ Installation & Setup
 
-### Step 1: Download the Project
+### Step 1: Download & Extract the Files
 
-#### Option A: Clone with Git (Recommended for Developers)
+#### Option A: Download from GitHub Releases (.zip) — Recommended
+1. Go to the **[Releases](../../releases)** section on GitHub.
+2. Download the latest `gemini-live-screen-windows-v1.0.1.zip` asset.
+3. Extract the `.zip` archive into any permanent directory on your PC (e.g. `D:\Tools\gemini-live-screen-windows`).
+
+#### Option B: Clone via Git
 ```bash
-git clone https://github.com/your-username/gemini-live-screen-windows.git
+git clone https://github.com/crrrowz/gemini-live-screen-windows.git
 cd gemini-live-screen-windows
 ```
 
-#### Option B: Download from GitHub Releases (.zip)
-1. Navigate to the **[Releases](../../releases)** section on GitHub.
-2. Download the latest `gemini-live-screen-windows-v1.0.0.zip` asset.
-3. Extract the `.zip` archive into any permanent directory on your machine (e.g. `D:\Tools\gemini-live-screen-windows`).
+---
+
+### Step 2: One-Time Native Host Registration (Automates Server Launch & Exit)
+
+Inside the extracted root folder:
+
+#### For Windows:
+1. Locate the file named **`register_native_host.bat`** (located directly in the main project folder).
+2. **Double-click `register_native_host.bat`** to run it.
+3. A command window will appear and display `[Success] Native Messaging Host registered successfully in Chrome!`. Press any key to finish.
+
+#### For macOS:
+1. Open Terminal in the project directory.
+2. Run the registration script:
+   ```bash
+   bash register_native_host_mac.sh
+   ```
+3. You will see `[Success] Native Messaging Host registered successfully on macOS!`.
+
+*(This one-time registration tells Chrome how to automatically spin up the local server in the background when you click the extension icon, and automatically kill it when you close the viewer tab).*
 
 ---
 
-### Step 2: Load the Extension into Google Chrome
+### Step 3: Load the Extension into Google Chrome
 
-1. Open Google Chrome and go to:
+1. Open Google Chrome and navigate to:
    ```text
    chrome://extensions/
    ```
-2. Toggle on **Developer mode** in the top-right corner.
+2. Enable **Developer mode** using the toggle switch in the top-right corner.
 3. Click the **Load unpacked** button in the top-left corner.
-4. Select the project directory containing `manifest.json`.
-5. Pin the **Gemini Live Screen for Windows** icon to your Chrome toolbar for instant 1-click access.
+4. Select the extracted project folder (containing `manifest.json`).
+5. Pin the **Gemini Live Screen for Windows** icon in your Chrome extensions toolbar.
 
 ---
 
-### Step 3: (Optional) Local Companion Server
+## 📖 Daily Usage
 
-For tab-based AI integrations such as Gemini Live tab capture:
-```bash
-# Start the local development server (Node.js 18+)
-npm start
-```
-- Open `http://localhost:5173/viewer/viewer.html` in Chrome.
-- The server automatically monitors connection heartbeats and terminates when the viewer window is closed.
-
----
-
-## 📖 Usage Guide
-
-1. Click the **Windows Screen Viewer** icon in your Chrome toolbar (or open the local URL).
-2. The extension automatically opens (or brings into focus) the dedicated viewer page.
-3. Click the **Share Screen** button (or press `Space`).
-4. In the Chrome native screen picker:
-   - Select the **Entire Screen** tab.
-   - Choose your Windows monitor.
-   - Click **Share**.
-5. Your Windows desktop is now live in the tab:
-   - Press **`F`** to toggle fullscreen mode.
-   - The bottom control HUD automatically fades away after 2.5 seconds of inactivity.
-   - Move the mouse anytime to bring the HUD back.
-   - Press **`S`** or click **Stop Sharing** (or use Chrome's native stop banner) to end sharing.
-   - *(See [Background Capture & Preventing Black Screen](#-background-capture--preventing-black-screen-when-minimized) for backgrounding best practices).*
+1. **Click the extension icon** in your Chrome toolbar:
+   - Chrome will automatically launch the native companion server in the background and open `http://localhost:5173/viewer/viewer.html`.
+2. Click the **Share Windows Screen** button (or press `Space`).
+3. In the Chrome screen picker, choose the **Entire Screen** tab and select your Windows monitor.
+4. Open **Gemini Live** to share the tab and begin multimodal AI collaboration.
+5. When finished, simply **close the viewer tab** — Chrome will automatically terminate the background server process and free all memory!
 
 ---
 

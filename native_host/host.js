@@ -4,22 +4,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
-const ROOT_DIR = path.dirname(__filename);
-const PORT = process.env.PORT || 5173;
-
-// Activity tracking: auto-exit when no client is active
-let lastActivity = Date.now();
-let activeClients = 0;
-
-function checkAutoExit() {
-  // If no active connections for 8 seconds, cleanly terminate server
-  if (activeClients === 0 && (Date.now() - lastActivity > 8000)) {
-    console.log('[Server] No active clients connected. Auto-shutting down.');
-    process.exit(0);
-  }
-}
-
-setInterval(checkAutoExit, 3000);
+const ROOT_DIR = path.resolve(path.dirname(__filename), '..');
+const PORT = 5173;
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -32,39 +18,13 @@ const MIME_TYPES = {
   '.ico': 'image/x-icon'
 };
 
+// 1. Start HTTP Server
 const server = http.createServer((req, res) => {
-  // Heartbeat endpoint
-  if (req.url === '/api/heartbeat') {
-    lastActivity = Date.now();
-    activeClients = 1;
-    res.writeHead(200, {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
-    });
-    res.end(JSON.stringify({ status: 'active', time: lastActivity }));
-    return;
-  }
-
-  // Graceful disconnect endpoint
-  if (req.url === '/api/disconnect') {
-    activeClients = 0;
-    lastActivity = 0; // Trigger shutdown immediately on next check
-    res.writeHead(200, {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
-    });
-    res.end(JSON.stringify({ status: 'disconnected' }));
-    setTimeout(checkAutoExit, 300);
-    return;
-  }
-
-  // Normalize request URL and strip leading slashes
   let reqPath = req.url.split('?')[0].replace(/^\/+/, '');
   if (reqPath === '' || reqPath === 'viewer' || reqPath === 'viewer/') {
     reqPath = 'viewer/viewer.html';
   }
 
-  // Prevent path traversal
   const safePath = path.normalize(reqPath).replace(/^(\.\.[\/\\])+/, '');
   let filePath = path.join(ROOT_DIR, safePath);
 
@@ -76,7 +36,7 @@ const server = http.createServer((req, res) => {
           serveFile(fallbackPath, res);
         } else {
           res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
-          res.end('404 Not Found - Gemini Live Screen for Windows');
+          res.end('404 Not Found - Gemini Live Screen');
         }
       });
       return;
@@ -87,7 +47,6 @@ const server = http.createServer((req, res) => {
 });
 
 function serveFile(filePath, res) {
-  lastActivity = Date.now();
   const ext = path.extname(filePath).toLowerCase();
   const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
@@ -110,17 +69,41 @@ function serveFile(filePath, res) {
 }
 
 server.on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    console.log(`[Notice] Port ${PORT} is already running.`);
-  } else {
-    console.error('Server error:', err);
-  }
+  // If port is already in use, that's fine
 });
 
 server.listen(PORT, '127.0.0.1', () => {
-  console.log(`\n======================================================`);
-  console.log(`  Gemini Live Screen for Windows (Local Web Server)`);
-  console.log(`  Local URL: http://localhost:${PORT}/viewer/viewer.html`);
-  console.log(`  Auto-Shutdown enabled when tab is closed.`);
-  console.log(`======================================================\n`);
+  sendNativeMessage({ status: 'ready', port: PORT, url: `http://localhost:${PORT}/viewer/viewer.html` });
+});
+
+// 2. Native Messaging Protocol over STDIN / STDOUT
+function sendNativeMessage(msg) {
+  try {
+    const buffer = Buffer.from(JSON.stringify(msg));
+    const header = Buffer.alloc(4);
+    header.writeUInt32LE(buffer.length, 0);
+    process.stdout.write(header);
+    process.stdout.write(buffer);
+  } catch {
+    // Ignore stdio write errors
+  }
+}
+
+// When Chrome closes the port, stdin receives 'end' / 'close' -> terminate server immediately!
+process.stdin.on('end', () => {
+  server.close(() => {
+    process.exit(0);
+  });
+});
+
+process.stdin.on('close', () => {
+  process.exit(0);
+});
+
+// Handle incoming messages from extension
+process.stdin.on('readable', () => {
+  let chunk;
+  while ((chunk = process.stdin.read()) !== null) {
+    // Keep-alive heartbeat read
+  }
 });

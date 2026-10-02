@@ -15,10 +15,11 @@ describe('Manifest V3 Compliance & Least Privilege Test', () => {
     assert.ok(manifest.version, 'Must have a version');
   });
 
-  test('manifest permissions specify desktopCapture for continuous OS stream', () => {
+  test('manifest permissions specify desktopCapture and nativeMessaging', () => {
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
     assert.ok(Array.isArray(manifest.permissions), 'permissions must be an array');
     assert.ok(manifest.permissions.includes('desktopCapture'), 'permissions must include desktopCapture');
+    assert.ok(manifest.permissions.includes('nativeMessaging'), 'permissions must include nativeMessaging');
   });
 
   test('manifest specifies background service worker as module', () => {

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Gemini Live Screen for Windows",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Live Windows desktop display for Gemini Live and Chrome with zero recording and direct hardware acceleration.",
   "action": {
     "default_title": "Open Gemini Live Screen for Windows",
@@ -22,8 +22,10 @@
     "48": "assets/icons/icon48.png",
     "128": "assets/icons/icon128.png"
   },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApf2fEh/rMjtEhi9gYC4y95XAqgzycEupXQJawBnRizbRoyR80Wi/xWhuMq08S9kMNmntBSPKviOa4cU/WlSHTr0hR8NMWI9a4H0A5vW55AspNgjAHxVxfYUBu4d9OcCoKVy4GXtnRFpbcw77UDgMcd5Lattn302RhkLXiA+oAPGc46zOASNPWBsRf0bI1bHFdCvSb/BD+5evhR+wpx+fwmT8bvR2j3HeaPtScF/UhD6ggYyQ0mBP1JD2lFCHawz69vRpIkNuXgwsZn2HnelaGOWALopas3OPI5KZNVY9dQRaGsHXIPUBHTJf2hYNyYGK9EI3G/C2N49CVvaJp7wuVQIDAQAB",
   "permissions": [
-    "desktopCapture"
+    "desktopCapture",
+    "nativeMessaging"
   ],
   "host_permissions": [
     "http://localhost/*",
